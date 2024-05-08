@@ -31,5 +31,13 @@ const createGame = async (req, res, next) => {
     res.status(400).send(JSON.stringify({ message: "Ошибка создания игры" }));
   }
 };
-
-module.exports = {findAllGames, createGame, findGameById}
+const updateGame = async (req, res, next) => {
+    try{
+      req.game = await games.findByIdAndUpdate(req.params.id, req.body)
+      next()
+    }catch(err){
+      res.setHeader("Content-Type", "application/json");
+      res.status(400).send(JSON.stringify({ message: "Ошибка обновления игры" }));
+    }
+}
+module.exports = {findAllGames, createGame, findGameById, updateGame}
