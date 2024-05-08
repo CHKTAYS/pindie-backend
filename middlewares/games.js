@@ -2,10 +2,24 @@
 const games = require("../models/game");
 
 const findAllGames = async (req, res, next) => {
-  req.gamesArray = await games.find({}).populate('categories').populate('users');
-  console.log(req.gamesArray)
+  req.gamesArray = await games.find({}).populate('categories').populate({
+    path: "users",
+    select: "-password"
+  });
   next();
 };
+const findGameById = async (req, res, next) => {
+  try{
+    req.game = await games.findById(req.params.id).populate('categories').populate({
+      path: "users",
+      select: "-password"
+    })
+    next()
+  }catch (error) {
+      res.setHeader("Content-Type", "application/json");
+        res.status(404).send(JSON.stringify({ message: "Игра не найдена" }));
+    }
+}
 const createGame = async (req, res, next) => {
   console.log("POST /games");
   try{
@@ -18,4 +32,4 @@ const createGame = async (req, res, next) => {
   }
 };
 
-module.exports = {findAllGames, createGame}
+module.exports = {findAllGames, createGame, findGameById}
