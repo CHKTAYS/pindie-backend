@@ -1,17 +1,40 @@
-const usersRouter = require('express').Router()
-const { findAllUsers, findUserById, updateUser } = require('../middlewares/users')
-const { createUser } = require('../middlewares/users')
-const { sendUserCreated, sendUserById, sendUserUpdated } = require('../controllers/users')
-const { sendAllUsers } = require('../controllers/users')
+const usersRouter = require("express").Router();
+const {
+  findAllUsers,
+  findUserById,
+  updateUser,
+  deleteUser,
+  checkEmptyNameAndEmailAndPassword,
+  checkEmptyNameAndEmail,
+  checkIsUserExists,
+} = require("../middlewares/users");
+const { createUser } = require("../middlewares/users");
+const {
+  sendUserCreated,
+  sendUserById,
+  sendUserUpdated,
+  sendUserDeleted,
+} = require("../controllers/users");
+const { sendAllUsers } = require("../controllers/users");
 
-usersRouter.get('/users', findAllUsers, sendAllUsers)
-usersRouter.get('/users/:id', findUserById, sendUserById)
+usersRouter.get("/users", findAllUsers, sendAllUsers);
+usersRouter.get("/users/:id", findUserById, sendUserById);
 
-usersRouter.post('/users', findAllUsers, createUser, sendUserCreated)
+usersRouter.post(
+  "/users",
+  findAllUsers,
+  checkIsUserExists,
+  checkEmptyNameAndEmailAndPassword,
+  createUser,
+  sendUserCreated
+);
 
-usersRouter.put('/users/:id', 
-    findUserById,
-    updateUser,
-    sendUserUpdated
-)
-module.exports = { usersRouter }
+usersRouter.put(
+  "/users/:id",
+  findUserById,
+  checkEmptyNameAndEmail,
+  updateUser,
+  sendUserUpdated
+);
+usersRouter.delete("/users/:id", deleteUser, sendUserDeleted);
+module.exports = { usersRouter };
